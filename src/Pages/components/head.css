@@ -1,0 +1,16 @@
+.head-menu{
+    display: block;
+    color: #33a597;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    padding: 5px 0px;
+    border-bottom: 1px solid #222;
+    border-top: 2px solid #3c3c3c;
+}
+
+.head-menu:hover,
+.head-menu:focus{
+    background-color: #000 !important;
+    color: #fff !important;
+}

@@ -8,9 +8,9 @@ new WebpackDevServer(webpack(config), {
     publicPath: config.output.publicPath,
     hot: true,
     proxy: {  
-            '/api/': {  
+            '/api/dh/': {  
             	changeOrigin: true,
-                target: 'http://120.76.21.117/',  
+                target: 'http://gp.xiaoshutech.com/',  
                 secure: false  
             }  
         }  

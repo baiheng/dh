@@ -3,19 +3,20 @@ var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var version = "1";
 
+
 module.exports = {
     entry: {
         main: [
-            'webpack-dev-server/client?http://localhost:3011',
+            'webpack-dev-server/client?http://localhost:3011/',
             'webpack/hot/only-dev-server',
             './src/index.js'
         ]
     },
     output: {
         path: __dirname + '/build/',
-        filename: version + '.bundle.js',
         publicPath: '/build/',
         chunkFilename: '[id].[hash].chunk.js',
+        filename: version + '.bundle.js',
     },
     module: {
         loaders:[
