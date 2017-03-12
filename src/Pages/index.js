@@ -10,6 +10,7 @@ module.exports = {
         require.ensure([], (require) => {
             cb(null, [
                 require('./System'),
+                require('./Stock'),
             ])
         })
     },

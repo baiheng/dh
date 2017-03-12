@@ -12,6 +12,11 @@ new WebpackDevServer(webpack(config), {
             	changeOrigin: true,
                 target: 'http://gp.xiaoshutech.com/',  
                 secure: false  
+            } , 
+            '/v1/': {  
+                changeOrigin: true,
+                target: 'http://10.8.0.1:8080/',  
+                secure: false  
             }  
         }  
 }).listen(port, function (err, result) {
