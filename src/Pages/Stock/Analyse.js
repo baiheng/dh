@@ -152,7 +152,7 @@ class Analyse extends React.Component {
             <div style={{
                 border: "1px solid #95a5a6",
                 marginBottom: "20px",
-                width: "24%",
+                width: "27%",
                 padding: "10px",
             }} key={"total"}>
                 {Object.keys(this.state.data).map((item, index) => {
@@ -167,7 +167,7 @@ class Analyse extends React.Component {
                             color: "#2980b9",
                             fontWeight: "bold" 
                         }} key={"t" + index}>
-                            <div>{item}</div>
+                            <div>{item + "(" + data.Percentage.toFixed(2) + "%)"}</div>
                             <div style={{
                                 color: "#d35400",
                                 fontWeight: "bold" 
