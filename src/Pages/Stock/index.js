@@ -6,5 +6,9 @@ module.exports = {
             path: 'trade',
             component: require("./Trade"), 
         },
+        {
+            path: 'analyse',
+            component: require("./Analyse"), 
+        },
     ],
 }

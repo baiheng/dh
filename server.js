@@ -15,7 +15,7 @@ new WebpackDevServer(webpack(config), {
             } , 
             '/v1/': {  
                 changeOrigin: true,
-                target: 'http://10.8.0.1:8080/',  
+                target: 'http://10.8.0.1:18080/',  
                 secure: false  
             }  
         }  
