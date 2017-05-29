@@ -10,7 +10,7 @@ class Analyse extends React.Component {
         this.state = {
             data: {},
             date: moment(),
-            code: "sh603031",
+            code: "603031",
             startTs: 33300,
             endTs: 54000,
         }
@@ -177,12 +177,6 @@ class Analyse extends React.Component {
                 })}
             </div>
         );
-    }
-
-    turnDate(value) {
-        if(value <= 40){
-
-        }
     }
 
     formatSeconds(value) {  

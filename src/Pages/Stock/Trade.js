@@ -12,7 +12,7 @@ class Trade extends React.Component {
             buyData: [],
             sellData: [],
             date: moment(),
-            code: "sh603031",
+            code: "603031",
             start: 0,
             end: 100,
         }
