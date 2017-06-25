@@ -1,6 +1,7 @@
 import React from 'react'
 import { hashHistory } from 'react-router'
-import { Table, Button, Icon, Modal, Form, Input, Radio, Select, Popconfirm, Pagination, DatePicker, Slider } from 'antd'
+import { Table, Button, Icon, Modal, Form, Input, Radio,
+    Select, Popconfirm, Pagination, DatePicker, Slider, Tabs, Switch } from 'antd'
 import { user } from 'config'
 
 
@@ -8,11 +9,15 @@ class Analyse extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            data: {},
+            analyseData: {},
+            amountAnalyseData: {},
             date: moment(),
             code: "603031",
             startTs: 33300,
             endTs: 54000,
+            minAmount: 30,
+            maxAmount: 200,
+            amountRange: false,
         }
     }
 
@@ -20,7 +25,8 @@ class Analyse extends React.Component {
     }
 
     componentDidMount() {
-        this.getList();
+        this.getAnalyseList();
+        this.getAmountAnalyseList();
     }
 
     componentWillReceiveProps(nextProps){
@@ -39,7 +45,7 @@ class Analyse extends React.Component {
     componentWillUnmount(){
     }
 
-    getList(){
+    getAnalyseList(){
         if(this.state.startTs > 41400 && this.state.endTs < 46800){
             return user.showMsg("时间范围错误")
         }
@@ -60,8 +66,34 @@ class Analyse extends React.Component {
             success: function(data){
                 if(data.ret == 0){
                     this.setState({
-                        total: data.total,
-                        data: data.data,
+                        analyseData: data.data,
+                    });
+                }else{
+                    user.showRequestError(data)
+                }
+            }.bind(this),
+        })
+    }
+
+    getAmountAnalyseList(){
+        let data = {}
+        data.min_amount = this.state.minAmount * 10000
+        if(this.state.amountRange){
+            data.max_amount = this.state.maxAmount * 10000
+        }        
+        $.ajax({
+            url: "/v1/amount_analyse",
+            type: "GET",
+            data: {
+                code: this.state.code,
+                date: this.state.date.format("YYYYMMDD"),
+                ...data
+            }, 
+            dataType: "json",
+            success: function(data){
+                if(data.ret == 0){
+                    this.setState({
+                        amountAnalyseData: data.data,
                     });
                 }else{
                     user.showRequestError(data)
@@ -71,7 +103,7 @@ class Analyse extends React.Component {
     }
 
     renderAnalyseItem(key){
-        let data = this.state.data[key];
+        let data = this.state.analyseData[key];
         return (
             <div style={{
                 border: "1px solid #95a5a6",
@@ -151,12 +183,38 @@ class Analyse extends React.Component {
         return (
             <div style={{
                 border: "1px solid #95a5a6",
-                marginBottom: "20px",
-                width: "27%",
                 padding: "10px",
-            }} key={"total"}>
-                {Object.keys(this.state.data).map((item, index) => {
-                    let data = this.state.data[item];
+                width: "48%",
+            }}>
+
+                <div style={{width: "95%"}}>
+                    <Slider range defaultValue={[33300, 54000]} min={33300} max={54000} marks={{
+                        33300: '9:15',
+                        36000: '10:00',
+                        37800: '10:30',
+                        39600: '11:00',
+                        41400: '11:30',
+                        46800: '13:00',
+                        48600: '13:30',
+                        50400: '14:00',
+                        52200: '14:30',
+                        54000: '15:00'
+                    }} tipFormatter={(v)=>{
+                        let t = this.formatSeconds(v);
+                        return t[0] + ":" + t[1] + ":" + t[2]
+                    }}
+                    value={[this.state.startTs, this.state.endTs]}
+                    onChange={(value) => {
+                        this.setState({
+                            startTs: value[0],
+                            endTs: value[1]
+                        })
+                    }}
+                    />
+                </div>
+
+                {Object.keys(this.state.analyseData).map((item, index) => {
+                    let data = this.state.analyseData[item];
                     return (
                         <div style={{
                             display: "flex",
@@ -175,6 +233,121 @@ class Analyse extends React.Component {
                         </div>
                     )
                 })}
+            </div>
+        );
+    }
+
+    renderAmountAnalyse(){
+        if(Object.keys(this.state.amountAnalyseData).length != 0){
+            let myChat = echarts.init(document.getElementById('amountAnalyseChart'));
+            let buyAmountData = [];
+            let sellAmountData = [];
+            let totalAmountData = [];
+            for(let key of Object.keys(this.state.amountAnalyseData)){
+                let item = this.state.amountAnalyseData[key] 
+                buyAmountData.push(item.BuyAmount/10000)
+                sellAmountData.push(-item.SellAmount/10000)
+                totalAmountData.push(item.Amount/10000)
+            }
+            var option = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['买资金','卖资金', '总金额'],
+                    selected: {
+                        "总金额": false,
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: Object.keys(this.state.amountAnalyseData),
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '买资金',
+                        type: 'line',
+                        data: buyAmountData,
+                    },
+                    {
+                        name: '卖资金',
+                        type: 'line',
+                        data: sellAmountData,
+                    },
+                    {
+                        name: '总金额',
+                        type: 'line',
+                        data: totalAmountData,
+                    }
+                ]
+            };
+            myChat.setOption(option);
+        }
+        return (
+            <div style={{
+                border: "1px solid #95a5a6",
+                padding: "10px",
+                width: "48%",
+            }}>
+
+                <div style={{
+                    display: "flex",
+                    display: "-webkit-flex",
+                    justifyContent: "space-between",
+                }}>
+                <div style={{width: "95%",}}>
+                    <Slider 
+                        included={this.state.amountRange}
+                        range={this.state.amountRange} 
+                        defaultValue={this.state.amountRange? [30, 200]: 30} min={10} max={200} marks={{
+                        10: '10w',
+                        20: '20w',
+                        30: '30w',
+                        50: '50w',
+                        100: '100w',
+                        200: '200w',
+                    }} tipFormatter={(v)=>{
+                        return v + "w"
+                    }}
+                    value={this.state.amountRange? [this.state.minAmount, this.state.maxAmount]: this.state.minAmount}
+                    onChange={(value) => {
+                        if(!this.state.amountRange){
+                            this.setState({
+                                minAmount: value,
+                            })
+                        }else{
+                            this.setState({
+                                minAmount: value[0],
+                                maxAmount: value[1]
+                            })
+                        }
+                    }}
+                    />
+                </div>
+                <div style={{
+                    width: "5%", 
+                    display: "flex",
+                    display: "-webkit-flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-start"
+                }}>
+                    <input type="checkbox" checked={this.state.amountRange} onChange={() => this.setState({
+                        amountRange: !this.state.amountRange
+                    })}/>
+                </div>
+                </div>
+
+                <div id="amountAnalyseChart" style={{width: "100%", height: "100%"}}>
+                </div>
             </div>
         );
     }
@@ -210,14 +383,6 @@ class Analyse extends React.Component {
                         </div>
                     </div>
                     <div className="am-u-sm-12 am-margin-vertical">
-                        <div className="am-g am-g-collapse">
-                            <div className="am-u-sm-6"> 
-                            </div>
-                            <div className="am-u-sm-3"> 
-                            </div>
-                        </div>
-                    </div>
-                    <div className="am-u-sm-3">
                         <div className="content-bg">
                             <div>
                                 <DatePicker 
@@ -234,50 +399,37 @@ class Analyse extends React.Component {
                                     onChange={(value) => {
                                         this.setState({code: value.target.value})
                                     }}
-                                    onSearch={value => this.getList()} />
-                            </div>
-                            <div>
-                                <Slider range defaultValue={[33300, 54000]} min={33300} max={54000} marks={{
-                                    33300: '9:15',
-                                    36000: '10:00',
-                                    37800: '10:30',
-                                    39600: '11:00',
-                                    41400: '11:30',
-                                    46800: '13:00',
-                                    48600: '13:30',
-                                    50400: '14:00',
-                                    52200: '14:30',
-                                    54000: '15:00'
-                                }} tipFormatter={(v)=>{
-                                    let t = this.formatSeconds(v);
-                                    return t[0] + ":" + t[1] + ":" + t[2]
-                                }}
-                                value={[this.state.startTs, this.state.endTs]}
-                                onChange={(value) => {
-                                    this.setState({
-                                        startTs: value[0],
-                                        endTs: value[1]
-                                    })
-                                }}
-                                />
+                                    onSearch={value => {
+                                        this.getAnalyseList()
+                                        this.getAmountAnalyseList()
+                                    }
+                                    } />
                             </div>
                         </div>
                     </div>
-                    <div className="am-u-sm-9">
-                        <div className="content-bg">
-                            <div  style={{
-                                    display: "flex",
-                                    display: "-webkit-flex",
-                                    flexFlow: "row wrap",
-                                    overflow: "auto",
-                                    justifyContent: "space-between",
-                                    marginBottom: "30px"
-                                }}>
-                                {this.state.data && this.renderAnalyse()}
-                                {Object.keys(this.state.data).map((item, index) => {
-                                    return this.renderAnalyseItem(item)
-                                })}
-                            </div>
+
+                    <div className="am-u-sm-12">
+                        <div style={{
+                            display: "flex",
+                            display: "-webkit-flex",
+                            justifyContent: "space-between",
+                            marginBottom: "10px"
+                        }} className="content-bg">
+                            {this.state.analyseData && this.renderAnalyse()}
+                            {this.renderAmountAnalyse()}
+                        </div>
+
+                        <div style={{
+                                display: "flex",
+                                display: "-webkit-flex",
+                                flexFlow: "row wrap",
+                                overflow: "auto",
+                                justifyContent: "space-between",
+                                marginBottom: "30px"
+                            }} className="content-bg">
+                            {Object.keys(this.state.analyseData).map((item, index) => {
+                                return this.renderAnalyseItem(item)
+                            })}
                         </div>
                     </div>
                 </div>

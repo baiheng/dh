@@ -164,14 +164,6 @@ class Trade extends React.Component {
                         </div>
                     </div>
                     <div className="am-u-sm-12 am-margin-vertical">
-                        <div className="am-g am-g-collapse">
-                            <div className="am-u-sm-6"> 
-                            </div>
-                            <div className="am-u-sm-3"> 
-                            </div>
-                        </div>
-                    </div>
-                    <div className="am-u-sm-3">
                         <div className="content-bg">
                             <div>
                                 <DatePicker 
@@ -192,7 +184,7 @@ class Trade extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="am-u-sm-9">
+                    <div className="am-u-sm-12">
                         <div className="content-bg">
                             <div  style={{
                                     display: "flex",
