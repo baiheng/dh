@@ -180,6 +180,39 @@ class Analyse extends React.Component {
     }
 
     renderAnalyse(){
+        let totalAmountData = {};
+        for(let [k, v] of Object.entries(this.state.analyseData)){
+            let keys = k.split("-");
+            if(totalAmountData.hasOwnProperty(keys[0] + "-" + keys[1])){
+                if(keys[2] == "3主砸" || keys[2] == "4被买"){
+                    totalAmountData[keys[0] + "-" + keys[1]].Amount -= v.Amount
+                    totalAmountData[keys[0] + "-" + keys[1]].Number -= v.Number
+                    totalAmountData[keys[0] + "-" + keys[1]].Percentage -= v.Percentage
+                    totalAmountData[keys[0] + "-" + keys[1]].SellPercentage += v.Percentage
+                    totalAmountData[keys[0] + "-" + keys[1]].SellTotal += v.Amount
+                }else{
+                    totalAmountData[keys[0] + "-" + keys[1]].Amount += v.Amount
+                    totalAmountData[keys[0] + "-" + keys[1]].Number += v.Number
+                    totalAmountData[keys[0] + "-" + keys[1]].Percentage += v.Percentage
+                    totalAmountData[keys[0] + "-" + keys[1]].BuyPercentage += v.Percentage
+                    totalAmountData[keys[0] + "-" + keys[1]].BuyTotal += v.Amount
+                }
+            }else{
+                if(keys[2] == "3主砸" || keys[2] == "4被买"){
+                    totalAmountData[keys[0] + "-" + keys[1]] = {
+                        Amount: -v.Amount,
+                        Number: -v.Number,
+                        Percentage: -v.Percentage,
+                        BuyPercentage: 0,
+                        SellPercentage: v.Percentage,
+                        SellTotal: v.Amount,
+                        BuyTotal: 0,
+                    }
+                }else{
+                    totalAmountData[keys[0] + "-" + keys[1]] = {...v, ...{SellTotal: 0, BuyTotal: v.Amount, BuyPercentage: v.Percentage, SellPercentage: 0}}
+                }
+            }
+        }
         return (
             <div style={{
                 border: "1px solid #95a5a6",
@@ -213,6 +246,30 @@ class Analyse extends React.Component {
                     />
                 </div>
 
+                <div style={{marginBottom: "10px"}}>
+                {Object.keys(totalAmountData).map((item, index) => {
+                    let data = totalAmountData[item];
+                    return (
+                        <div style={{
+                            display: "flex",
+                            display: "-webkit-flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            paddingBottom: "5px",
+                            color: "#2980b9",
+                            fontWeight: "bold",
+                            fontSize: "15px", 
+                        }} key={"td" + index}>
+                            <div>{item + "(" + data.BuyPercentage.toFixed(2) + '-' + data.SellPercentage.toFixed(2) + '=' + data.Percentage.toFixed(2) + "%)"}</div>
+                            <div style={{
+                                color: "#d35400",
+                                fontWeight: "bold" 
+                            }}>金额：<span>{(data.BuyTotal/10000).toFixed(2) + "w"} - {(data.SellTotal/10000).toFixed(2) + "w"} = {(data.Amount/10000).toFixed(2) + "w"}</span></div>
+                        </div>
+                    )
+                })}
+                </div>
+
                 {Object.keys(this.state.analyseData).map((item, index) => {
                     let data = this.state.analyseData[item];
                     return (
@@ -233,6 +290,7 @@ class Analyse extends React.Component {
                         </div>
                     )
                 })}
+
             </div>
         );
     }
@@ -240,14 +298,17 @@ class Analyse extends React.Component {
     renderAmountAnalyse(){
         if(Object.keys(this.state.amountAnalyseData).length != 0){
             let myChat = echarts.init(document.getElementById('amountAnalyseChart'));
+            let myBuyChat = echarts.init(document.getElementById('buyAmountAnalyseChart'));
             let buyAmountData = [];
             let sellAmountData = [];
             let totalAmountData = [];
+            let amountData = [];
             for(let key of Object.keys(this.state.amountAnalyseData)){
                 let item = this.state.amountAnalyseData[key] 
                 buyAmountData.push(item.BuyAmount/10000)
                 sellAmountData.push(-item.SellAmount/10000)
                 totalAmountData.push(item.Amount/10000)
+                amountData.push((item.BuyAmount-item.SellAmount)/10000)
             }
             var option = {
                 tooltip: {
@@ -291,6 +352,36 @@ class Analyse extends React.Component {
                 ]
             };
             myChat.setOption(option);
+
+            var option1 = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['流入资金'],
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: Object.keys(this.state.amountAnalyseData),
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '流入资金',
+                        type: 'line',
+                        data: amountData,
+                    }
+                ]
+            };
+            myBuyChat.setOption(option1);
         }
         return (
             <div style={{
@@ -346,7 +437,9 @@ class Analyse extends React.Component {
                 </div>
                 </div>
 
-                <div id="amountAnalyseChart" style={{width: "100%", height: "100%"}}>
+                <div id="amountAnalyseChart" style={{width: "100%", height: "350px"}}>
+                </div>
+                <div id="buyAmountAnalyseChart" style={{width: "100%", height: "250px"}}>
                 </div>
             </div>
         );

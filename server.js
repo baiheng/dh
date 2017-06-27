@@ -15,7 +15,8 @@ new WebpackDevServer(webpack(config), {
             } , 
             '/v1/': {  
                 changeOrigin: true,
-                target: 'http://10.8.0.1:18080/',  
+                // target: 'http://10.8.0.1:18080/',  
+                target: 'http://gp.xiaoshutech.com/',  
                 secure: false  
             }  
         }  
