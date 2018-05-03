@@ -15,14 +15,12 @@ class User{
             return;
         }else{
             $.ajax({
-                url: "/api/dh/system/user",
-                type: "OPTIONS",
+                url: "/api/dh/account/login?action=menu",
+                type: "GET",
                 dataType: "json",
                 async: false,
                 success: function(data){
                     if(data.ret == 0){
-                        this.conf = data.data.conf;
-                        this.id = data.data.id;
                         this.email = data.data.email;
                         this.menu = data.data.menu;
                     }else{
@@ -40,7 +38,7 @@ class User{
     showRequestError(data){
         if(data.ret == 1){
             this.showMsg("服务器出了点故障");
-        }else if(data.ret == 2){
+        }else if(data.ret == 3){
             hashHistory.push("/login");
         }else{
             this.showMsg(data.msg);

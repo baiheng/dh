@@ -136,7 +136,7 @@ class Account extends React.Component {
 
     getList(){
         $.ajax({
-            url: "/api/dh/system/account",
+            url: "/api/dh/account/user",
             type: "GET",
             data: Object.assign({
                 start: 0,
@@ -170,7 +170,7 @@ class Account extends React.Component {
 
     newOpt(data){
         $.ajax({
-            url: "/api/dh/system/account",
+            url: "/api/dh/account/user",
             type: "POST",
             data: data,
             dataType: "json",
@@ -200,7 +200,7 @@ class Account extends React.Component {
 
     editOpt(data){
         $.ajax({
-            url: "/api/dh/system/account",
+            url: "/api/dh/account/user",
             type: "PUT",
             data: Object.assign(this.state.editRecord, data),
             dataType: "json",
@@ -234,7 +234,7 @@ class Account extends React.Component {
             return;
         }
         $.ajax({
-            url: "/api/dh/system/account",
+            url: "/api/dh/account/user",
             type: "DELETE",
             data: this.state.editRecord,
             dataType: "json",

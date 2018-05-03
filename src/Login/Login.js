@@ -74,7 +74,7 @@ class Login extends React.Component {
                         marginLeft: "-150px",
                         top: "50px",
                     }}>
-                        <form className="am-form" action="/api/dh/system/user" method="post">
+                        <form className="am-form" action="/api/dh/account/login" method="post">
                             <div className="am-form-group">
                                 <label>邮箱地址</label>
                                 <input type="email" className="" placeholder="邮箱地址" name="email" required/>

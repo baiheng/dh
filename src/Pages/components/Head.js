@@ -28,7 +28,7 @@ class Head extends React.Component {
             return user.showMsg("新密码两次输入不相同");
         }
         $.ajax({
-            url: "/api/v1/system/admin",
+            url: "/api/v1/account/login",
             type: "PUT",
             data: {
                 old_password: old_pwd,
@@ -128,7 +128,7 @@ class Head extends React.Component {
                         <a className="head-menu" onClick={()=>{this.setState({pwdModel: true})}}>  
                             修改密码
                         </a>
-                        <a className="head-menu" href="/api/v1/system/admin">   
+                        <a className="head-menu" href="/api/v1/account/login">   
                             退出登录
                         </a>
                 </div>
