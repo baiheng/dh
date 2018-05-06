@@ -104,7 +104,7 @@ class Head extends React.Component {
                         })
                     }}  
                     >
-                    {user.email}
+                    {this.props.email}
                     <span className="fa fa-sort-desc am-margin-left"></span>
                 </div>
                 <div onMouseEnter={() =>{
@@ -128,7 +128,7 @@ class Head extends React.Component {
                         <a className="head-menu" onClick={()=>{this.setState({pwdModel: true})}}>  
                             修改密码
                         </a>
-                        <a className="head-menu" href="/api/v1/account/login">   
+                        <a className="head-menu" href="/api/dh/account/login">   
                             退出登录
                         </a>
                 </div>

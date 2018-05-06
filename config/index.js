@@ -11,6 +11,7 @@ class User{
     }
     
     getUserInfo(){
+        console.log("data")
         if(this.id != -1){
             return;
         }else{

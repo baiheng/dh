@@ -4,7 +4,10 @@ import { user } from 'config'
 module.exports = {
     path: 'pages',
 
-    onEnter: () => {user.getUserInfo()},
+    // onEnter: () => {
+    //     console.log("adsf")
+    //     user.getUserInfo()
+    // },
 
     getChildRoutes(location, cb) {
         require.ensure([], (require) => {

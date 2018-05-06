@@ -2,14 +2,14 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router, hashHistory, Route, IndexRoute, browserHistory } from 'react-router'
 import App from './components/App'
-import Account from './Pages/System/Account'
+import Framework  from './Pages/components/Framework'
 
 
 const rootRoute = {
     path: '/',
     component: App,
     indexRoute: {
-        component: Account,
+        component: Framework,
     },
     childRoutes: [
         require('./Login'),

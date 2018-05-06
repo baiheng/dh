@@ -2,34 +2,10 @@ import React from 'react'
 import { hashHistory } from 'react-router'
 
 import { Menu, Icon, Switch } from 'antd';
-import { user } from 'config'
-
 
 class SiderBar extends React.Component {
-    componentWillMount(){
-    }
-
-    componentDidMount(){
-    }
-
-    componentWillReceiveProps(nextProps){
-    }
-
-    shouldComponentUpdate(){
-        return true;
-    }
-
-    componentWillUpdate(nextProps, nextState){
-    }
-
-    componentDidUpdate(prevProps, prevState){
-    }
-
-    componentWillUnmount(){
-    }
- 
     render() {
-        let menu = user.menu;
+        let menu = this.props.menu;
         return (
             <div
                 style={{
@@ -42,14 +18,16 @@ class SiderBar extends React.Component {
                     overflowY: "auto",
                     overflowX: "hidden",
                 }}>
-                <Menu theme="dark"
+                <Menu 
+                    theme="dark"
                     style={{ width: this.props.width }}
-                    defaultOpenKeys={['sub1']}
                     mode="inline" 
-                    onClick={(item, key, keyPath) => {
-                        hashHistory.push({
-                            pathname: item.key,
-                        })
+                    onClick={({ item, key, keyPath }) => {
+                        if(key){
+                            hashHistory.push({
+                                pathname: key,
+                            })
+                        }
                     }}>
                     {
                         menu.map((item, index) => {

@@ -10,5 +10,9 @@ module.exports = {
             path: 'analyse',
             component: require("./Analyse"), 
         },
+        {
+            path: 'strategy',
+            component: require("./Strategy"), 
+        },
     ],
 }

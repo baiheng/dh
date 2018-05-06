@@ -358,11 +358,15 @@ class Account extends React.Component {
                                         })
                                     }
                                 }}
-                                onRowClick={(record, index) => {
-                                    this.setState({
-                                        selectedRowKeys: [index],
-                                        editRecord: Object.assign({}, record),
-                                    })
+                                onRow={(record, index) => {
+                                    return {
+                                        onClick: () => {
+                                            this.setState({
+                                                selectedRowKeys: [index],
+                                                editRecord: Object.assign({}, record),
+                                            })
+                                        },
+                                    }
                                 }}
                                 filterMultiple={false}
                                 rowKey={record => record.id}
