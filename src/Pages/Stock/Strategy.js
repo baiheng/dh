@@ -1,10 +1,9 @@
 import React from 'react'
 import { hashHistory } from 'react-router'
-import { Table, Button, Icon, Modal, Form, Input, Radio, Select, Popconfirm, Pagination, DatePicker  } from 'antd'
+import { Table, Button, Icon, Modal, Form, Input, Radio, Select, Popconfirm, Pagination, DatePicker,InputNumber } from 'antd'
 import { user } from 'config'
 
 
-const days = 7
 class Strategy extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -15,6 +14,8 @@ class Strategy extends React.Component {
             paramList: [],
             paramID: -1,
             codeList: [],
+            codeSum: [],
+            days: 7,
         }
     }
 
@@ -47,6 +48,7 @@ class Strategy extends React.Component {
                             paramList: [],
                             paramID: -1,
                             codeList: [],
+                            codeSum: [],
                         });
                         return
                     }
@@ -81,6 +83,7 @@ class Strategy extends React.Component {
                         this.setState({
                             paramList: data.data.list,
                             codeList: [],
+                            codeSum: [],
                         });
                         return
                     }
@@ -109,19 +112,34 @@ class Strategy extends React.Component {
                 strategy_id: this.state.strategyID,
                 param_id: this.state.paramID,
                 date: this.state.date.format("YYYY-MM-DD"),
-                price_days: days
+                price_days: this.state.days
             },
             dataType: "json",
             success: function(data){
                 if(data.ret == 0){
                     this.setState({
                         codeList: data.data.list,
+                        codeSum: data.data.sum,
                     });
                 }else{
                     user.showRequestError(data)
                 }
             }.bind(this),
         })
+    }
+
+    renderRateColor(r){
+        if(r == 0){
+            return {}
+        }else if(r > 0){
+            return {
+                color: "red"
+            }
+        }else{
+            return {
+                color: "green"
+            }
+        }
     }
 
     render(){
@@ -133,7 +151,7 @@ class Strategy extends React.Component {
         let head = [<th key="股票">股票</th>]
         if(this.state.codeList.length >= 1){
             this.state.codeList[0].price_list.map((item, index)=>{
-                head.push(<th key={index}>{item.date}</th>)
+                head.push(<th key={index}>{moment(item.timestamp).format('YYYY-MM-DD')}</th>)
             })
         }
         return (
@@ -155,9 +173,15 @@ class Strategy extends React.Component {
                                     onChange={(date) => {
                                         this.setState({
                                             date: date
-                                        })
+                                        },this.getCodeList)
                                     }}
                                 />
+                                <InputNumber style={{width: "100px", marginLeft: "10px"}}
+                                value={this.state.days} onChange={(value)=>{
+                                    this.setState({
+                                        days: value
+                                    },this.getCodeList)
+                                }} />
                             </div>
                         </div>
                     </div>
@@ -206,11 +230,11 @@ class Strategy extends React.Component {
                                 }
                             </div>
                             <div style={{
-                                flexGrow: 1,
                                 borderRight: "1px solid rgba(0,0,0,.1)",
                                 overflow: "auto",
+                                width: "100%",
                             }}>
-                                <div style={{padding: "5px", borderBottom: "1px solid rgba(0,0,0,.1)"}}>
+                                <div style={{padding: "20px", borderBottom: "1px solid rgba(0,0,0,.1)"}}>
                                     <Radio.Group onChange={(e)=>{
                                         if(this.state.paramID == e.target.value){
                                             return
@@ -239,55 +263,61 @@ class Strategy extends React.Component {
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <tr>
+                                            <td>统计</td>
+                                                {
+                                                    this.state.codeSum.map((item, index) => {
+                                                        return(
+                                                            <td key={index}>
+                                                                <div style={this.renderRateColor(item.open_rate)}>
+                                                                    开：{item.open_rate}%。
+                                                                </div>
+                                                                <div style={this.renderRateColor(item.close_rate)}>
+                                                                    收：{item.close_rate}%。
+                                                                </div>
+                                                                <div style={this.renderRateColor(item.high_rate)}>
+                                                                    最高：{item.high_rate}%。
+                                                                </div>
+                                                                <div style={this.renderRateColor(item.low_rate)}>
+                                                                    最低：{item.low_rate}%
+                                                                </div>
+                                                            </td>
+                                                        )
+                                                    })
+                                                }
+                                        </tr> 
                                     {
                                         this.state.codeList.map((item, index) => {
                                             return(
                                                 <tr key={index}>
-                                                    <td>{item.name}</td>
-                                                    <td>http://amazeui.org</td>
-                                                    <td>2012-10-01</td>
+                                                    <td>{item.info.name}</td>
+                                                    {
+                                                        item.price_list.map((sitem, sindex) => {
+                                                            return (
+                                                                <td key={sindex}>
+                                                                    <div style={this.renderRateColor(sitem.open_rate)}>
+                                                                        开：{sitem.open} {sitem.open_rate}%。
+                                                                    </div>
+                                                                    <div style={this.renderRateColor(sitem.close_rate)}>
+                                                                        收：{sitem.close} {sitem.close_rate}%。
+                                                                    </div>
+                                                                    <div style={this.renderRateColor(sitem.high_rate)}>
+                                                                        最高：{sitem.high} {sitem.high_rate}%。
+                                                                    </div>
+                                                                    <div style={this.renderRateColor(sitem.low_rate)}>
+                                                                        最低：{sitem.low} {sitem.low_rate}%
+                                                                    </div>
+                                                                </td>
+                                                            )
+                                                        })
+                                                    }
                                                 </tr> 
                                             )
                                         })
                                     }
-                                        <tr>
-                                            <td>
-                                                <div>600315 格力电器</div>
-                                                <div>adsf</div>
-                                            </td>
-                                            <td>http://amazeui.org</td>
-                                            <td>2012-10-01</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Amaze UI</td>
-                                            <td>http://amazeui.org</td>
-                                            <td>2012-10-01</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Amaze UI(Active)</td>
-                                            <td>http://amazeui.org</td>
-                                            <td>2012-10-01</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Amaze UI</td>
-                                            <td>http://amazeui.org</td>
-                                            <td>2012-10-01</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Amaze UI</td>
-                                            <td>http://amazeui.org</td>
-                                            <td>2012-10-01</td>
-                                        </tr>
                                     </tbody>
                                     </table>
                                 </div>
-                            </div>
-                            <div style={{
-                                flexGrow: 1,
-                                padding: "5px",
-                                overflow: "auto",
-                            }}>
-                                dfd
                             </div>
                         </div>
                     </div>
