@@ -10,8 +10,8 @@ new WebpackDevServer(webpack(config), {
     proxy: {  
             '/api/dh/': {  
             	changeOrigin: true,
-                // target: 'http://gp.xiaoshutech.com/',  
-                target: 'http://10.8.0.1:18189/',  
+                target: 'http://gp.xiaoshutech.com/',  
+                // target: 'http://10.8.0.1:18189/',  
                 secure: false  
             } , 
             '/v1/': {  
