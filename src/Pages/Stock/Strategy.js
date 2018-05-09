@@ -142,6 +142,14 @@ class Strategy extends React.Component {
         }
     }
 
+    codeToSymbol(code){
+        if(code.startsWith("60")){
+            return "sh" + code
+        }else{
+            return "sz" + code
+        }
+    }
+
     render(){
         const radioStyle = {
             display: 'block',
@@ -290,7 +298,16 @@ class Strategy extends React.Component {
                                         this.state.codeList.map((item, index) => {
                                             return(
                                                 <tr key={index}>
-                                                    <td>{item.info.name}</td>
+                                                    <td>
+                                                        <div>{item.info.name}</div>
+                                                        <div>
+                                                            <a href={"https://xueqiu.com/S/" + this.codeToSymbol(item.code)} target="_blank">
+                                                                {item.code}
+                                                            </a>
+                                                        </div>
+                                                        <div>PE：{item.info.pe_lyr} </div>
+                                                        <div>市值：{(parseFloat(item.info.marketCapital)/100000000).toFixed(2)} 亿</div>
+                                                    </td>
                                                     {
                                                         item.price_list.map((sitem, sindex) => {
                                                             return (
