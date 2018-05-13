@@ -269,17 +269,8 @@ class Strategy extends React.Component {
                                                     this.state.codeSum.map((item, index) => {
                                                         return(
                                                             <td key={index}>
-                                                                <div style={this.renderRateColor(item.open_rate)}>
-                                                                    开：{item.open_rate}%。
-                                                                </div>
-                                                                <div style={this.renderRateColor(item.close_rate)}>
-                                                                    收：{item.close_rate}%。
-                                                                </div>
-                                                                <div style={this.renderRateColor(item.high_rate)}>
-                                                                    最高：{item.high_rate}%。
-                                                                </div>
-                                                                <div style={this.renderRateColor(item.low_rate)}>
-                                                                    最低：{item.low_rate}%
+                                                                <div style={this.renderRateColor(item.average_rate)}>
+                                                                    均价：{item.average_rate}%。
                                                                 </div>
                                                             </td>
                                                         )
@@ -295,17 +286,8 @@ class Strategy extends React.Component {
                                                         item.price_list.map((sitem, sindex) => {
                                                             return (
                                                                 <td key={sindex}>
-                                                                    <div style={this.renderRateColor(sitem.open_rate)}>
-                                                                        开：{sitem.open} {sitem.open_rate}%。
-                                                                    </div>
-                                                                    <div style={this.renderRateColor(sitem.close_rate)}>
-                                                                        收：{sitem.close} {sitem.close_rate}%。
-                                                                    </div>
-                                                                    <div style={this.renderRateColor(sitem.high_rate)}>
-                                                                        最高：{sitem.high} {sitem.high_rate}%。
-                                                                    </div>
-                                                                    <div style={this.renderRateColor(sitem.low_rate)}>
-                                                                        最低：{sitem.low} {sitem.low_rate}%
+                                                                    <div style={this.renderRateColor(sitem.average_rate)}>
+                                                                        均价：{sitem.average} {sitem.average_rate}%。
                                                                     </div>
                                                                 </td>
                                                             )

@@ -4,6 +4,7 @@ import { Table, Button, Icon, Modal, Form, Input, Radio, Select, Popconfirm, Pag
 import { user } from 'config'
 
 
+const pageSize = 80;
 class Trade extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -14,7 +15,7 @@ class Trade extends React.Component {
             date: moment(),
             code: "603031",
             start: 0,
-            end: 100,
+            end: pageSize,
         }
     }
 
@@ -140,7 +141,7 @@ class Trade extends React.Component {
                     display: "-webkit-flex",
                     flexDirection: "row",
                     marginRight: "20px",
-                    width: "350px"
+                    width: "450px"
                 }} key={index}>
                 <div style={tsStyle}>{startTs}</div>
                 <div style={priceStyle}>{startPrice}</div>
@@ -200,11 +201,11 @@ class Trade extends React.Component {
                             </div>
                             <div>
                                 <Pagination 
-                                    current={this.state.start/100 + 1}
+                                    current={this.state.start/pageSize + 1}
                                     defaultCurrent={1}
-                                    onChange={(p, pageSize)=>{
-                                        let start = (p - 1) * pageSize;
-                                        let end = start + pageSize;
+                                    onChange={(p, size)=>{
+                                        let start = (p - 1) * size;
+                                        let end = start + size;
                                         this.setState({
                                             start: start,
                                             end: end
@@ -212,7 +213,7 @@ class Trade extends React.Component {
                                     }} 
                                     total={this.state.total} 
                                     showTotal={(total) => {return `Total ${total} items`;}}
-                                    defaultPageSize={100}
+                                    defaultPageSize={pageSize}
                                     showQuickJumper />
                             </div>
                         </div>
