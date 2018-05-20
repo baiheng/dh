@@ -291,7 +291,7 @@ class Strategy extends React.Component {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>统计</td>
+                                            <td>统计 {this.state.codeList.length} 票</td>
                                                 {
                                                     this.state.codeSum.map((item, index) => {
                                                         return(
