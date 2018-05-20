@@ -128,6 +128,25 @@ class Strategy extends React.Component {
         })
     }
 
+    newBlackListCode(code){
+        $.ajax({
+            url: "/api/dh/strategy/black_list",
+            type: "POST",
+            data: {
+                strategy_id: this.state.strategyID,
+                code: code,
+            },
+            dataType: "json",
+            success: function(data){
+                if(data.ret == 0){
+                    this.getCodeList()
+                }else{
+                    user.showRequestError(data)
+                }
+            }.bind(this),
+        })
+    }
+
     renderRateColor(r){
         if(r == 0){
             return {}
@@ -290,14 +309,29 @@ class Strategy extends React.Component {
                                             return(
                                                 <tr key={index}>
                                                     <td>
-                                                        <div>{item.info.name}</div>
                                                         <div>
-                                                            <a href={"https://xueqiu.com/S/" + this.codeToSymbol(item.code)} target="_blank">
-                                                                {item.code}
+                                                            <span className="am-margin-right">{item.info.name} ({item.code}) </span>
+                                                            <a className="am-fr" onClick={()=>{
+                                                                if(confirm("拉黑  " + item.info.name)){
+                                                                    this.newBlackListCode(item.code)
+                                                                }
+                                                            }}>
+                                                                拉黑
                                                             </a>
                                                         </div>
-                                                        <div>PE：{item.info.pe_lyr} </div>
-                                                        <div>市值：{(parseFloat(item.info.marketCapital)/100000000).toFixed(2)} 亿</div>
+                                                        <div>
+                                                            <a className="am-margin-right" 
+                                                            href={"https://www.kaipanla.com/index.php/stock/index?id="+item.code} target="_blank">
+                                                                开盘啦
+                                                            </a>
+                                                            <a href={"https://xueqiu.com/S/" + this.codeToSymbol(item.code)} target="_blank">
+                                                                雪球
+                                                            </a>
+                                                        </div>
+                                                        <div>
+                                                            <span className="am-margin-right">PE：{item.info.pe_lyr} </span>
+                                                            <span>市值：{(parseFloat(item.info.marketCapital)/100000000).toFixed(2)} 亿 </span>
+                                                        </div>
                                                     </td>
                                                     {
                                                         item.price_list.map((sitem, sindex) => {
